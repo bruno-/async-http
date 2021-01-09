@@ -31,10 +31,10 @@ module Async
 	module HTTP
 		# Represents a way to connect to a remote HTTP server.
 		class Endpoint < Async::IO::Endpoint
-			def self.parse(string, endpoint = nil, **options)
-				url = URI.parse(string).normalize
+			def self.parse(url, endpoint = nil, **options)
+				url = url.is_a?(URI) ? url : URI.parse(url.to_str)
 				
-				return self.new(url, endpoint, **options)
+				return self.new(url.normalize, endpoint, **options)
 			end
 			
 			# Construct an endpoint with a specified scheme, hostname, and options.

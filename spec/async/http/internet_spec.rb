@@ -32,12 +32,28 @@ RSpec.describe Async::HTTP::Internet, timeout: 5 do
 		subject.close
 	end
 	
-	it "can fetch remote website" do
-		response = subject.get("https://www.codeotaku.com/index", headers)
+	describe "fetching a remote website" do
+		shared_examples :successful_request do
+			it "succeeds" do
+				response = subject.get(url, headers)
+				
+				expect(response).to be_success
+				
+				response.close
+			end
+		end
 		
-		expect(response).to be_success
+		context "when url is a string" do
+			let(:url) { "https://www.codeotaku.com/index" }
+			
+			include_examples :successful_request
+		end
 		
-		response.close
+		context "when url is a URI object" do
+			let(:url) { URI.parse("https://www.codeotaku.com/index") }
+			
+			include_examples :successful_request
+		end
 	end
 	
 	let(:sample) {{"hello" => "world"}}
